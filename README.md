@@ -14,7 +14,7 @@ git clone https://github.com/davidejones/netlify-cms-oauth-provider-python.git
 cd netlify-cms-oauth-provider-python
 python3 -m venv /path/to/new/virtual/environment
 source /path/to/new/virtual/environment/bin/activate
-pip install -r requirements.txt`
+pip install -r requirements.txt
 ```
 
 For windows
@@ -23,7 +23,7 @@ git clone https://github.com/davidejones/netlify-cms-oauth-provider-python.git
 cd netlify-cms-oauth-provider-python
 python3 -m venv /path/to/new/virtual/environment
 C:\path\to\new\virtual\environment\bin\activate.bat
-pip install -r requirements.txt`
+pip install -r requirements.txt
 ```
 
 ## 2) Config
@@ -60,3 +60,8 @@ backend:
   branch: master    # Branch to update
   base_url: https://your.server.com # Path to ext auth provider
 ```
+
+## 3) Run it
+With your virtual environment activated run the server as follows
+
+`python main.py`
