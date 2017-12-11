@@ -39,7 +39,7 @@ def callback():
     try:
         github = OAuth2Session(client_id, state=state, scope=scope)
         token = github.fetch_token(token_url, client_secret=client_secret, authorization_response=request.url)
-        content = json.dumps({'token': token, 'provider': 'github'})
+        content = json.dumps({'token': token.get('access_token', ''), 'provider': 'github'})
         message = 'success'
     except BaseException as e:
         message = 'error'
