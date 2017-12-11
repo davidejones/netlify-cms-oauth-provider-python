@@ -12,7 +12,7 @@ For mac and linux
 ```
 git clone https://github.com/davidejones/netlify-cms-oauth-provider-python.git
 cd netlify-cms-oauth-provider-python
-python3 -m venv /path/to/new/virtual/environment
+python -m venv /path/to/new/virtual/environment
 source /path/to/new/virtual/environment/bin/activate
 pip install -r requirements.txt
 ```
@@ -21,7 +21,7 @@ For windows
 ```
 git clone https://github.com/davidejones/netlify-cms-oauth-provider-python.git
 cd netlify-cms-oauth-provider-python
-python3 -m venv /path/to/new/virtual/environment
+python -m venv /path/to/new/virtual/environment
 C:\path\to\new\virtual\environment\bin\activate.bat
 pip install -r requirements.txt
 ```

@@ -1,5 +1,5 @@
 from requests_oauthlib import OAuth2Session
-from flask import Flask, request, redirect, session
+from flask import Flask, request, redirect
 import json
 import os
 from os.path import join, dirname
@@ -14,7 +14,8 @@ authorization_base_url = 'https://github.com/login/oauth/authorize'
 token_host = os.environ.get('GIT_HOSTNAME', 'https://github.com')
 token_path = os.environ.get('OAUTH_TOKEN_PATH', '/login/oauth/access_token')
 authorize_path = os.environ.get('OAUTH_AUTHORIZE_PATH', '/login/oauth/authorize')
-token_url = '{token_host}{authorize_path}'.format(token_host=token_host, authorize_path=authorize_path)
+token_url = '{token_host}{token_path}'.format(token_host=token_host, token_path=token_path)
+scope = os.environ.get('SCOPES', 'repo,user')
 
 
 @app.route("/")
@@ -26,31 +27,31 @@ def index():
 @app.route("/auth")
 def auth():
     """ We clicked login now redirect to github auth """
-    github = OAuth2Session(client_id)
+    github = OAuth2Session(client_id, scope=scope)
     authorization_url, state = github.authorization_url(authorization_base_url)
-    session['oauth_state'] = state
     return redirect(authorization_url)
 
 
 @app.route("/callback", methods=["GET"])
 def callback():
     """ retrieve access token """
+    state = request.args.get('state', '')
     try:
-        github = OAuth2Session(client_id, state=session['oauth_state'])
+        github = OAuth2Session(client_id, state=state, scope=scope)
         token = github.fetch_token(token_url, client_secret=client_secret, authorization_response=request.url)
-        session['oauth_token'] = token
         content = json.dumps({'token': token, 'provider': 'github'})
         message = 'success'
     except BaseException as e:
         message = 'error'
         content = str(e)
-    script = """<script>
+    post_message = json.dumps('authorization:github:{0}:{1}'.format(message, content))
+    return """<html><body><script>
     (function() {
       function recieveMessage(e) {
         console.log("recieveMessage %o", e)
         // send message to main window with da app
         window.opener.postMessage(
-          'authorization:github:{message}:{content}',
+          """+post_message+""",
           e.origin
         )
       }
@@ -59,8 +60,7 @@ def callback():
       console.log("Sending message: %o", "github")
       window.opener.postMessage("authorizing:github", "*")
       })()
-    </script>"""
-    return script.format(message=message, content=content)
+    </script></body></html>"""
 
 
 @app.route("/success", methods=["GET"])
@@ -71,5 +71,7 @@ def success():
 if __name__ == "__main__":
     # This allows us to use a plain HTTP callback
     os.environ['DEBUG'] = "1"
+    # If your server is not parametrized to allow HTTPS set this
+    # os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
     app.secret_key = os.urandom(24)
-    app.run(debug=True)
+    app.run(ssl_context='adhoc', port=3000, debug=True)
