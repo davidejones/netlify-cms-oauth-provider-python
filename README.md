@@ -39,6 +39,7 @@ OAUTH_CLIENT_ID=f432a9casdff1e4b79c57
 OAUTH_CLIENT_SECRET=pampadympapampadympapampadympa
 REDIRECT_URL=https://your.server.com/callback
 GIT_HOSTNAME=https://github.website.com
+SSl_ENABLED=1
 ```
 
 **Client ID & Client Secret:**

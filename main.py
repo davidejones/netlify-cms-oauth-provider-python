@@ -16,6 +16,7 @@ token_path = os.environ.get('OAUTH_TOKEN_PATH', '/login/oauth/access_token')
 authorize_path = os.environ.get('OAUTH_AUTHORIZE_PATH', '/login/oauth/authorize')
 token_url = '{token_host}{token_path}'.format(token_host=token_host, token_path=token_path)
 scope = os.environ.get('SCOPES', 'repo,user')
+ssl_enabled = os.environ.get('SSL_ENABLED', '0') == '1'
 
 
 @app.route("/")
@@ -69,9 +70,13 @@ def success():
 
 
 if __name__ == "__main__":
-    # This allows us to use a plain HTTP callback
-    os.environ['DEBUG'] = "1"
-    # If your server is not parametrized to allow HTTPS set this
-    # os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+    run_config = {}
+    if not ssl_enabled:
+        # allows us to use a plain HTTP callback
+        os.environ['DEBUG'] = "1"
+        # If your server is not parametrized to allow HTTPS set this
+        os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+    else:
+        run_config = {'ssl_context': 'adhoc'}
     app.secret_key = os.urandom(24)
-    app.run(ssl_context='adhoc', port=3000, debug=True)
+    app.run(port=3000, debug=True, **run_config)
