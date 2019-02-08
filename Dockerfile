@@ -1,5 +1,4 @@
-#FROM python:3-alpine
-FROM harbor.ead.dom/external-images/python:3.7
+FROM python:3-alpine
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
