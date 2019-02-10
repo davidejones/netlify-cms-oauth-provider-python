@@ -79,4 +79,10 @@ if __name__ == "__main__":
     else:
         run_config = {'ssl_context': 'adhoc'}
     app.secret_key = os.urandom(24)
-    app.run(port=5000, debug=True, **run_config)
+
+    app.run(
+            host=os.environ.get('RUN_HOST', '127.0.0.1'),
+            port=int(os.environ.get('RUN_PORT', 5000)),
+            debug=True,
+            **run_config
+            )
